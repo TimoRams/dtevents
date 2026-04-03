@@ -3,220 +3,339 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>David & Timo DJ</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;600&display=swap" rel="stylesheet">
+    <title>Timo & David DJ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        * {
+        *, *::before, *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --green: #00ff96;
+            --purple: #b400ff;
+            --pink: #E1306C;
+            --bg: #060608;
+            --surface: rgba(255,255,255,0.04);
+            --border: rgba(255,255,255,0.08);
+            --text-muted: #888;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Montserrat', sans-serif;
-            background: radial-gradient(circle at top, #111, #050505);
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            background: var(--bg);
+            color: #fff;
             min-height: 100vh;
-            text-align: center;
+            overflow-x: hidden;
         }
 
-        /* LOGO */
-        .top-bar {
-            width: 100%;
-            padding: 30px 0;
+        /* ── BACKGROUND GLOW ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 40% at 20% 10%, rgba(0,255,150,0.07) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(180,0,255,0.07) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── HEADER ── */
+        header {
+            position: relative;
+            z-index: 10;
             display: flex;
             justify-content: center;
+            align-items: center;
+            padding: 40px 20px 20px;
+            animation: fadeDown 0.8s ease both;
         }
 
-        .logo {
-            width: 100px;
-            height: 100px;
-            object-fit: contain;
-            background: none;
-            mix-blend-mode: lighten;
-
-            /* entfernt doppelten Kreis */
-            border: none;
-            padding: 0;
-            background: none;
-
-            box-shadow: 
-                0 0 20px rgba(0,255,150,0.3),
-                0 0 20px rgba(180,0,255,0.3);
-
-            transition: all 0.3s ease;
+        /* LOGO – inline SVG, kein eckiger Kasten */
+        .logo-wrapper {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            filter:
+                drop-shadow(0 0 18px rgba(0,255,150,0.45))
+                drop-shadow(0 0 18px rgba(180,0,255,0.35));
+            transition: filter 0.3s ease, transform 0.3s ease;
         }
 
-        .logo:hover {
-            transform: scale(1.08);
-            box-shadow: 
-                0 0 30px rgba(0,255,150,0.5),
-                0 0 30px rgba(180,0,255,0.5);
+        .logo-wrapper:hover {
+            transform: scale(1.07) rotate(3deg);
+            filter:
+                drop-shadow(0 0 28px rgba(0,255,150,0.7))
+                drop-shadow(0 0 28px rgba(180,0,255,0.6));
         }
 
-        .container {
-            max-width: 900px;
+        .logo-wrapper svg {
             width: 100%;
-            padding: 0 20px 40px 20px;
+            height: 100%;
+            display: block;
         }
 
-        h1 {
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            margin-bottom: 5px;
-            font-weight: 600;
+        /* ── HERO ── */
+        .hero {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 10px 20px 50px;
+            animation: fadeUp 0.9s 0.2s ease both;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.2rem, 6vw, 4rem);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+            margin-bottom: 10px;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(90deg, var(--green), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .slogan {
-            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            font-size: clamp(1rem, 3vw, 1.4rem);
             color: #a855f7;
-            margin-bottom: 15px;
             font-weight: 500;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
         }
 
-        p {
-            font-size: clamp(1rem, 2.5vw, 1.2rem);
-            color: #bbbbbb;
-            margin-bottom: 25px;
-            line-height: 1.6;
+        .location {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 32px;
         }
 
-        .about-section {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 30px;
-            backdrop-filter: blur(10px);
+        /* ── DIVIDER ── */
+        .divider {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--green), var(--purple));
+            border-radius: 2px;
+            margin: 0 auto 32px;
         }
 
-        /* SOCIALS */
+        /* ── ABOUT CARD ── */
+        .about-card {
+            max-width: 600px;
+            margin: 0 auto 36px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 22px 28px;
+            font-size: 1rem;
+            color: #ccc;
+            line-height: 1.7;
+            backdrop-filter: blur(12px);
+        }
+
+        .about-card strong {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* ── SOCIALS ── */
         .socials {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin-bottom: 40px;
+            gap: 14px;
             flex-wrap: wrap;
+            margin-bottom: 48px;
         }
 
         .insta-btn {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 9px;
             text-decoration: none;
             color: #fff;
-
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-
-            padding: 10px 20px;
-            border-radius: 30px;
-
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 11px 22px;
+            border-radius: 999px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
             font-weight: 500;
-
-            backdrop-filter: blur(8px);
-
+            backdrop-filter: blur(10px);
             transition: all 0.25s ease;
         }
 
         .insta-btn svg {
-            width: 20px;
-            height: 20px;
-            fill: #ffffff;
-            transition: fill 0.3s ease;
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: #fff;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: stroke 0.25s ease;
+            flex-shrink: 0;
         }
 
         .insta-btn:hover {
             transform: translateY(-3px);
-            border-color: #E1306C;
-            box-shadow: 0 5px 20px rgba(225,48,108,0.4);
+            border-color: var(--pink);
+            box-shadow: 0 8px 24px rgba(225,48,108,0.3);
         }
 
         .insta-btn:hover svg {
-            fill: #E1306C;
+            stroke: var(--pink);
         }
 
-        /* HERO IMAGE */
+        /* ── HERO IMAGE ── */
+        .hero-img-wrap {
+            max-width: 680px;
+            margin: 0 auto;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hero-img-wrap::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 21px;
+            background: linear-gradient(135deg, rgba(0,255,150,0.3), rgba(180,0,255,0.3));
+            z-index: -1;
+        }
+
         .hero-img {
             width: 100%;
-            max-width: 650px;
-            border-radius: 16px;
-
-            box-shadow: 
-                0 0 40px rgba(0,255,150,0.15),
-                0 0 40px rgba(180,0,255,0.15);
-
-            transition: transform 0.3s ease;
+            display: block;
+            border-radius: 20px;
+            transition: transform 0.4s ease;
         }
 
         .hero-img:hover {
             transform: scale(1.02);
         }
 
+        /* ── FOOTER ── */
         footer {
-            margin-top: 40px;
-            font-size: 0.8rem;
-            color: #666;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 32px 20px;
+            font-size: 0.78rem;
+            color: #444;
+            letter-spacing: 1px;
+        }
+
+        /* ── CONTAINER ── */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 480px) {
+            .about-card { padding: 18px 18px; }
+            .insta-btn  { padding: 10px 18px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="top-bar">
-        <img src="images/Logo.svg" alt="David & Timo Logo" class="logo">
-    </div>
+    <header>
+        <!-- Logo inline eingebettet – kein eckiger Kasten mehr -->
+        <div class="logo-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000">
+                <defs>
+                    <style>
+                        .st0 { fill: #953289; }
+                        .st1 { fill: #fdfdfc; }
+                        .st2 { fill: #004e8f; }
+                        .st3 { fill: #62b12f; }
+                    </style>
+                </defs>
+                <path class="st2" d="M500,34.64C242.99,34.64,34.64,242.99,34.64,500s208.35,465.36,465.36,465.36,465.36-208.35,465.36-465.36S757.01,34.64,500,34.64ZM472.13,944.46c-222.58-13.74-400.9-190.99-416.36-413.09C37.02,261.78,261.78,37.02,531.36,55.77c222.11,15.45,399.35,193.78,413.09,416.36,16.48,266.93-205.39,488.81-472.33,472.33Z"/>
+                <path class="st3" d="M449.89,426.03h90.55l.14,113.56,121.2-.27c22.3-.05,43.95-8.58,59.79-23.44,15.57-14.61,21.12-34.58,18.43-56.49-4.67-37.9-44.18-60.98-80.99-61.01l-71.78-.27-57.07-75.74,133.26.04c61.15.02,129.59,29.36,155.95,87.86,25.75,57.14,9.29,122.64-39.14,162.52-31.17,25.66-70.26,42.02-111.66,42.18h-218.65v-188.94Z"/>
+                <polygon class="st0" points="421.9 614.97 331.28 614.97 331.28 398.11 224.94 398.11 168.57 322.37 500.25 322.37 557.32 398.11 421.9 398.11 421.9 614.97"/>
+                <g>
+                    <path class="st1" d="M332.06,727.34l16.25-92.47h40.55l-2.38,13.47h-25.23l-4.36,25.36h21.14l-2.38,13.47h-21.14l-4.76,26.68h25.63l-2.38,13.47h-40.95Z"/>
+                    <path class="st1" d="M439.85,727.34h-16.91l-1.19-92.47h15.19l-1.32,68.56,22.72-68.56h15.19l-33.68,92.47Z"/>
+                    <path class="st1" d="M492.16,727.34l16.25-92.47h40.55l-2.38,13.47h-25.23l-4.36,25.36h21.13l-2.38,13.47h-21.13l-4.76,26.68h25.63l-2.38,13.47h-40.95Z"/>
+                    <path class="st1" d="M571.15,727.34l16.25-92.47h15.06l9.64,57.2,10.04-57.2h14l-16.25,92.47h-14.27l-9.91-60.1-10.57,60.1h-14Z"/>
+                    <path class="st1" d="M715.14,648.34h-15.46l-13.87,78.99h-15.32l13.87-78.99h-15.46l2.38-13.47h46.23l-2.38,13.47Z"/>
+                    <path class="st1" d="M775.11,667.89l2.38-12.95c.92-5.81-1.98-7.92-6.47-7.92s-8.19,2.11-9.11,7.92l-1.19,6.34c-.79,4.76.13,7.4,4.09,9.91l9.77,6.08c8.19,5.15,12.68,9.12,10.96,18.49l-2.38,13.34c-2.51,14.27-10.83,19.29-26.16,19.29h-.26c-12.68,0-22.06-4.89-19.55-19.29l2.91-16.12h15.06l-2.51,14c-.92,5.68,1.85,8.19,6.47,8.19s8.45-2.51,9.38-8.19l1.32-7.27c.92-5.02-.26-7.66-4.36-10.17l-9.64-6.08c-7.13-4.49-12.29-10.3-10.83-18.49l2.11-12.15c2.51-13.74,12.15-19.02,26.16-19.02h.26c11.36,0,21.8,5.28,19.29,19.02l-2.64,15.06h-15.06Z"/>
+                </g>
+            </svg>
+        </div>
+    </header>
 
     <div class="container">
-        <h1>David & Timo 🎧</h1>
-        <h2 class="slogan">Zusammen einfach besser!</h2>
-        <p>DJ Duo aus Leopoldshöhe</p>
+        <section class="hero">
+            <h1>Timo &amp; David 🎧</h1>
+            <p class="slogan">Zusammen einfach besser!</p>
+            <p class="location">DJ Duo aus Leopoldshöhe</p>
 
-        <div class="about-section">
-            <p style="margin-bottom: 0;">
-                <strong>Über uns:</strong> Wir sind Timo und David. 
-                Wir liefern ab!
-            </p>
-        </div>
+            <div class="divider"></div>
 
-        <div class="socials">
-            <a href="https://www.instagram.com/timorams/" target="_blank" class="insta-btn">
-                <svg viewBox="0 0 24 24">
-                    <path d="M7 2C4.2 2 2 4.2 2 7v10c0 2.8 2.2 5 5 5h10c2.8 
-                    0 5-2.2 5-5V7c0-2.8-2.2-5-5-5H7zm10 2c1.7 0 3 
-                    1.3 3 3v10c0 1.7-1.3 3-3 3H7c-1.7 
-                    0-3-1.3-3-3V7c0-1.7 1.3-3 3-3h10zm-5 
-                    3.5A5.5 5.5 0 1 0 17.5 13 5.5 5.5 0 0 
-                    0 12 7.5zm0 2A3.5 3.5 0 1 1 8.5 13 3.5 
-                    3.5 0 0 1 12 9.5zm4.8-3.3a1.3 1.3 0 1 
-                    0 1.3 1.3 1.3 1.3 0 0 0-1.3-1.3z"/>
-                </svg>
-                Timo
-            </a>
+            <div class="about-card">
+                <strong>Über uns:</strong> Wir sind Timo und David –
+                ein DJ Duo das für gute Vibes sorgt. Wir liefern ab!
+            </div>
 
-            <a href="https://www.instagram.com/david_.photography_/" target="_blank" class="insta-btn">
-                <svg viewBox="0 0 24 24">
-                    <path d="M7 2C4.2 2 2 4.2 2 7v10c0 2.8 2.2 5 5 
-                    5h10c2.8 0 5-2.2 5-5V7c0-2.8-2.2-5-5-5H7zm10 
-                    2c1.7 0 3 1.3 3 3v10c0 1.7-1.3 3-3 
-                    3H7c-1.7 0-3-1.3-3-3V7c0-1.7 1.3-3 
-                    3-3h10zm-5 3.5A5.5 5.5 0 1 0 17.5 13 
-                    5.5 5.5 0 0 0 12 7.5zm0 2A3.5 3.5 0 
-                    1 1 8.5 13 3.5 3.5 0 0 1 12 9.5zm4.8-3.3a1.3 
-                    1.3 0 1 0 1.3 1.3 1.3 1.3 0 0 0-1.3-1.3z"/>
-                </svg>
-                David
-            </a>
-        </div>
+            <div class="socials">
+                <!-- Instagram-Icon als echtes IG-Outline-Icon -->
+                <a href="https://www.instagram.com/timorams/" target="_blank" rel="noopener" class="insta-btn">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                        <circle cx="12" cy="12" r="4"/>
+                        <circle cx="17.5" cy="6.5" r="0.5" fill="#fff" stroke="none"/>
+                    </svg>
+                    @timorams
+                </a>
+                <a href="https://www.instagram.com/david_.photography_/" target="_blank" rel="noopener" class="insta-btn">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                        <circle cx="12" cy="12" r="4"/>
+                        <circle cx="17.5" cy="6.5" r="0.5" fill="#fff" stroke="none"/>
+                    </svg>
+                    @david_.photography_
+                </a>
+            </div>
 
-        <img src="images/dj.jpg" alt="David und Timo Setup" class="hero-img">
-
-        <footer>
-            © 2026 David & Timo
-        </footer>
+            <div class="hero-img-wrap">
+                <img src="images/dj.jpg" alt="Timo und David beim DJ Setup" class="hero-img">
+            </div>
+        </section>
     </div>
+
+    <footer>© 2026 Timo &amp; David</footer>
 
 </body>
 </html>
