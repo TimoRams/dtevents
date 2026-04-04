@@ -47,6 +47,52 @@
             z-index: 0;
         }
 
+        /* ── CONTROLLER BG ── */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: -10%;
+            width: 65%;
+            height: 100vh;
+            background-image: url('images/controllerbg.jpg');
+            background-size: cover;
+            background-position: right center;
+            pointer-events: none;
+            z-index: 0;
+
+            /* Weich ausblenden: rechts + oben + unten komplett transparent */
+            -webkit-mask-image:
+                linear-gradient(to right,  rgba(0,0,0,0.13) 0%, rgba(0,0,0,0.08) 40%, transparent 75%),
+                linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+            -webkit-mask-composite: source-in;
+            mask-image:
+                linear-gradient(to right,  rgba(0,0,0,0.13) 0%, rgba(0,0,0,0.08) 40%, transparent 75%),
+                linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+            mask-composite: intersect;
+
+            /* Färbt das Bild leicht in die Akzentfarben */
+            mix-blend-mode: screen;
+            filter: saturate(2.0) brightness(0.38) hue-rotate(200deg);
+        }
+
+        @media (max-width: 640px) {
+            body::after {
+                left: -5%;
+                width: 110%;
+                background-position: center center;
+                /* Exakt gleiche Maske wie Desktop – nur Position/Größe ändert sich */
+                -webkit-mask-image:
+                    linear-gradient(to right,  rgba(0,0,0,0.13) 0%, rgba(0,0,0,0.08) 40%, transparent 75%),
+                    linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+                -webkit-mask-composite: source-in;
+                mask-image:
+                    linear-gradient(to right,  rgba(0,0,0,0.13) 0%, rgba(0,0,0,0.08) 40%, transparent 75%),
+                    linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+                mask-composite: intersect;
+            }
+        }
+
         /* ── HEADER ── */
         header {
             position: relative;
@@ -294,6 +340,148 @@
             color: #d9a0ff;
         }
 
+        /* ── GALLERY ── */
+        .gallery-section {
+            max-width: 960px;
+            margin: 0 auto 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .gallery-label {
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-auto-rows: 220px;
+            gap: 10px;
+        }
+
+        /* Feature slots – bigger cells */
+        .gallery-grid .g-wide {
+            grid-column: span 2;
+        }
+        .gallery-grid .g-tall {
+            grid-row: span 2;
+        }
+
+        .gallery-item {
+            border-radius: 14px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+            filter: brightness(0.9);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.06);
+            filter: brightness(1.05);
+        }
+
+        /* subtle gradient overlay on hover */
+        .gallery-item::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0,255,150,0.12), rgba(180,0,255,0.12));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 14px;
+        }
+
+        .gallery-item:hover::after {
+            opacity: 1;
+        }
+
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.92);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+            cursor: zoom-out;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 90vw;
+            max-height: 88vh;
+            border-radius: 12px;
+            object-fit: contain;
+            box-shadow: 0 0 60px rgba(0,0,0,0.8);
+            animation: lbIn 0.25s ease both;
+        }
+
+        .lightbox-close {
+            position: fixed;
+            top: 20px;
+            right: 24px;
+            font-size: 2rem;
+            color: #fff;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            line-height: 1;
+            z-index: 1001;
+        }
+
+        .lightbox-close:hover { opacity: 1; }
+
+        .lightbox-nav {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2.5rem;
+            color: #fff;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+            z-index: 1001;
+            user-select: none;
+            padding: 12px;
+        }
+
+        .lightbox-nav:hover { opacity: 1; }
+        .lightbox-prev { left: 16px; }
+        .lightbox-next { right: 16px; }
+
+        @keyframes lbIn {
+            from { opacity: 0; transform: scale(0.94); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+
+        @media (max-width: 640px) {
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-auto-rows: 160px;
+            }
+            .gallery-grid .g-wide { grid-column: span 2; }
+            .gallery-grid .g-tall { grid-row: span 1; }
+        }
+
         /* ── FOOTER ── */
         footer {
             position: relative;
@@ -363,42 +551,40 @@
 
     <div class="container">
         <section class="hero">
-            <h1>Timo &amp; David 🎧</h1>
+            <h1>Timo &amp; <span>David</span> 🎧</h1>
             <p class="slogan">Zusammen einfach besser!</p>
             <p class="location">DJ Duo aus Leopoldshöhe</p>
 
             <div class="divider"></div>
 
-            <!-- Bild + About nebeneinander -->
-            <div class="mid-section">
-                <div class="hero-img-wrap">
-                    <img src="images/dj.jpg" alt="Timo und David beim DJ Setup" class="hero-img">
+            <!-- Hero Bild -->
+            <div class="hero-img-wrap" style="max-width: 680px; margin: 0 auto 32px;">
+                <img src="images/dj.jpg" alt="Timo und David beim DJ Setup" class="hero-img">
+            </div>
+
+            <!-- About + Socials -->
+            <div style="max-width: 600px; margin: 0 auto 48px;">
+                <div class="about-card" style="margin-bottom: 16px;">
+                    <strong>Über uns:</strong> Wir sind Timo und David –
+                    ein DJ Duo das für gute Vibes sorgt. Wir liefern ab!
                 </div>
-
-                <div>
-                    <div class="about-card" style="margin-bottom: 16px;">
-                        <strong>Über uns:</strong> Wir sind Timo und David –
-                        ein DJ Duo das für gute Vibes sorgt. Wir liefern ab!
-                    </div>
-
-                    <div class="socials" style="justify-content: flex-start; margin-bottom: 0;">
-                        <a href="https://www.instagram.com/timorams/" target="_blank" rel="noopener" class="insta-btn">
-                            <svg viewBox="0 0 24 24" aria-hidden="true">
-                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-                                <circle cx="12" cy="12" r="4"/>
-                                <circle cx="17.5" cy="6.5" r="0.5" fill="#fff" stroke="none"/>
-                            </svg>
-                            @timorams
-                        </a>
-                        <a href="https://www.instagram.com/david_.photography_/" target="_blank" rel="noopener" class="insta-btn">
-                            <svg viewBox="0 0 24 24" aria-hidden="true">
-                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-                                <circle cx="12" cy="12" r="4"/>
-                                <circle cx="17.5" cy="6.5" r="0.5" fill="#fff" stroke="none"/>
-                            </svg>
-                            @david_.photography_
-                        </a>
-                    </div>
+                <div class="socials" style="margin-bottom: 0;">
+                    <a href="https://www.instagram.com/timorams/" target="_blank" rel="noopener" class="insta-btn">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                            <circle cx="12" cy="12" r="4"/>
+                            <circle cx="17.5" cy="6.5" r="0.5" fill="#fff" stroke="none"/>
+                        </svg>
+                        @timorams
+                    </a>
+                    <a href="https://www.instagram.com/david_.photography_/" target="_blank" rel="noopener" class="insta-btn">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                            <circle cx="12" cy="12" r="4"/>
+                            <circle cx="17.5" cy="6.5" r="0.5" fill="#fff" stroke="none"/>
+                        </svg>
+                        @david_.photography_
+                    </a>
                 </div>
             </div>
 
@@ -416,7 +602,128 @@
         </section>
     </div>
 
+    <!-- GALLERY -->
+    <div class="gallery-section container">
+        <p class="gallery-label">Impressionen</p>
+        <div class="gallery-grid" id="galleryGrid">
+            <!-- Row 1: wide landscape + portrait tall -->
+            <div class="gallery-item g-wide" data-index="0">
+                <img src="images/gallery/20220305_183737.jpg" alt="DJ Setup Sonnenuntergang">
+            </div>
+            <div class="gallery-item g-tall" data-index="1">
+                <img src="images/gallery/20250405_204150.jpg" alt="DJ Controller Nacht">
+            </div>
+            <!-- Row 2 (shares tall slot) -->
+            <div class="gallery-item" data-index="2">
+                <img src="images/gallery/20230115_030600.jpg" alt="Lichtshow">
+            </div>
+            <div class="gallery-item" data-index="3">
+                <img src="images/gallery/20230715_171602.jpg" alt="Location Setup">
+            </div>
+            <!-- Row 3 -->
+            <div class="gallery-item" data-index="4">
+                <img src="images/gallery/20230827_025251.jpg" alt="Birthday Setup">
+            </div>
+            <div class="gallery-item g-wide" data-index="5">
+                <img src="images/gallery/20241026_182938.jpg" alt="DJ am Sunset">
+            </div>
+            <!-- Row 4 -->
+            <div class="gallery-item g-tall" data-index="6">
+                <img src="images/gallery/20250509_214206.jpg" alt="Outdoor Event Sunset">
+            </div>
+            <div class="gallery-item" data-index="7">
+                <img src="images/gallery/20250625_232449.jpg" alt="DJ in Aktion" style="object-position: center top;">
+            </div>
+            <div class="gallery-item" data-index="8">
+                <img src="images/gallery/20250906_231133.jpg" alt="Nighttime Event">
+            </div>
+            <!-- Row 5 -->
+            <div class="gallery-item" data-index="9">
+                <img src="images/gallery/20250710_101531.jpg" alt="Outdoor DJ Sunset">
+            </div>
+            <div class="gallery-item g-wide" data-index="10">
+                <img src="images/gallery/IMG-20260322--2.jpg" alt="Timo und David am Setup" style="object-position: center 30%;">
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <span class="lightbox-close" id="lbClose">&times;</span>
+        <span class="lightbox-nav lightbox-prev" id="lbPrev">&#8249;</span>
+        <img src="" alt="" id="lbImg">
+        <span class="lightbox-nav lightbox-next" id="lbNext">&#8250;</span>
+    </div>
+
     <footer>© 2026 Timo &amp; David</footer>
 
+    <script>
+        const images = [
+            "images/gallery/20220305_183737.jpg",
+            "images/gallery/20250405_204150.jpg",
+            "images/gallery/20230115_030600.jpg",
+            "images/gallery/20230715_171602.jpg",
+            "images/gallery/20230827_025251.jpg",
+            "images/gallery/20241026_182938.jpg",
+            "images/gallery/20250509_214206.jpg",
+            "images/gallery/20250625_232449.jpg",
+            "images/gallery/20250906_231133.jpg",
+            "images/gallery/20250710_101531.jpg",
+            "images/gallery/IMG-20260322--2.jpg"
+        ];
+
+        let current = 0;
+        const lb = document.getElementById('lightbox');
+        const lbImg = document.getElementById('lbImg');
+
+        function openLb(index) {
+            current = index;
+            lbImg.src = images[current];
+            lb.classList.add('active');
+        }
+
+        function closeLb() { lb.classList.remove('active'); }
+
+        function navigate(dir) {
+            current = (current + dir + images.length) % images.length;
+            lbImg.style.animation = 'none';
+            lbImg.offsetHeight; // reflow
+            lbImg.style.animation = '';
+            lbImg.src = images[current];
+        }
+
+        document.querySelectorAll('.gallery-item').forEach(item => {
+            item.addEventListener('click', () => openLb(+item.dataset.index));
+        });
+
+        document.getElementById('lbClose').addEventListener('click', closeLb);
+        document.getElementById('lbPrev').addEventListener('click', e => { e.stopPropagation(); navigate(-1); });
+        document.getElementById('lbNext').addEventListener('click', e => { e.stopPropagation(); navigate(1); });
+        lb.addEventListener('click', e => { if (e.target === lb) closeLb(); });
+
+        document.addEventListener('keydown', e => {
+            if (!lb.classList.contains('active')) return;
+            if (e.key === 'Escape') closeLb();
+            if (e.key === 'ArrowLeft') navigate(-1);
+            if (e.key === 'ArrowRight') navigate(1);
+        });
+
+        // Fade-in on scroll
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.style.opacity = '1';
+                    e.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.gallery-item').forEach((item, i) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(20px)';
+            item.style.transition = `opacity 0.5s ease ${i * 0.06}s, transform 0.5s ease ${i * 0.06}s`;
+            observer.observe(item);
+        });
+    </script>
 </body>
 </html>
